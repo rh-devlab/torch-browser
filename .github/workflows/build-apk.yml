@@ -37,9 +37,7 @@ jobs:
 
       - name: Enable Full-Screen Edge-to-Edge Status Bar & Clear-Text Traffic
         run: |
-          # Allow HTTP/HTTPS sites inside WebView
           sed -i 's/<application/<application android:usesCleartextTraffic="true"/g' android/app/src/main/AndroidManifest.xml
-          # Set transparent/dark status bar matching edge-to-edge UI
           mkdir -p android/app/src/main/res/values
           cat << 'EOF' > android/app/src/main/res/values/styles.xml
           <?xml version="1.0" encoding="utf-8"?>
@@ -56,9 +54,8 @@ jobs:
           </resources>
           EOF
 
-            - name: Set Custom TORCH App Icon
+      - name: Set Custom TORCH App Icon
         run: |
-          # Remove default blue Capacitor PNG icons so Android uses our custom adaptive icon
           rm -f android/app/src/main/res/mipmap-*/ic_launcher*.png
           mkdir -p android/app/src/main/res/drawable
           mkdir -p android/app/src/main/res/values
@@ -91,8 +88,6 @@ jobs:
           </adaptive-icon>
           EOF
           cp android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml
-
-
 
       - name: Build Debug APK
         run: |
