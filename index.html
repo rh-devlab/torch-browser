@@ -778,7 +778,6 @@
       font-size: 11px;
       font-weight: 700;
     }
-
     @media (max-width: 768px) {
       .mobile-bottom-nav {
         display: block;
@@ -786,10 +785,21 @@
       .desktop-only {
         display: none !important;
       }
+      .nav-bar {
+        flex-wrap: wrap;
+        gap: 6px;
+        padding: 8px 10px;
+      }
       .omnibox-wrapper {
+        order: 3;
+        flex-basis: 100%;
         width: 100%;
       }
+      .chrome-actions {
+        margin-left: auto;
+      }
     }
+
 
     /* ==========================================================================
        Full-Screen Multi-Tab Switcher Modal
