@@ -1919,7 +1919,7 @@
                 <div class="card-name">${escapeHtml(domain)}</div>
                 <span class="card-badge">MATCH</span>
               </div>
-              <div class="card-target">${escapeHtml(target)}</div>
+              <div class="card-target">torch://${escapeHtml(domain)} &bull; Sovereign Hub</div>
             `;
             card.addEventListener('click', () => navigateActiveTab(domain));
             el.domainGrid.appendChild(card);
@@ -2196,7 +2196,7 @@
               </div>
               <span class="card-badge">VERIFIED</span>
             </div>
-            <div class="card-target">${escapeHtml(target)}</div>
+            <div class="card-target">torch://${escapeHtml(domain)} &bull; Sovereign Hub</div>
           `;
 
           const triggerNav = () => navigateActiveTab(domain);
