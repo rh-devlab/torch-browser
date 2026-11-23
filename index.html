@@ -2,7 +2,7 @@
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>TORCH Browser v2.0 Pro | The Open Routing &amp; Community Hub</title>
   <style>
     /* ==========================================================================
@@ -75,16 +75,26 @@
       padding: 0;
     }
 
+        html, body {
+      width: 100vw;
+      max-width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      overscroll-behavior: none;
+      touch-action: pan-y;
+      position: fixed;
+      inset: 0;
+    }
+
     body {
       font-family: var(--font-sans);
       background-color: var(--bg-base);
       color: var(--text-main);
-      height: 100vh;
       display: flex;
       flex-direction: column;
-      overflow: hidden;
       -webkit-font-smoothing: antialiased;
     }
+
 
     button, input {
       font-family: inherit;
@@ -394,24 +404,10 @@
     }
 
     /* Top Fallback Security Banner */
-    .external-banner {
-      position: absolute;
-      top: 10px;
-      right: 14px;
-      background: rgba(18, 18, 23, 0.92);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      border: 1px solid var(--border-subtle);
-      border-radius: 8px;
-      padding: 8px 12px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 12px;
-      color: var(--text-muted);
-      box-shadow: var(--shadow-md);
-      z-index: 40;
+        .external-banner {
+      display: none !important;
     }
+
     .external-banner.hidden {
       display: none;
     }
@@ -1794,10 +1790,23 @@
           el.nxdomainPage.classList.remove('hidden');
           el.nxdomainTarget.textContent = tab.displayUrl;
 
-          el.btnClaimDomain.onclick = () => {
-            window.open(`${GITHUB_REPO_URL}/issues/new?title=Claim+Domain:+${encodeURIComponent(tab.displayUrl)}`, '_blank');
-          };
-          setOmniboxBadge('local', 'NXDOMAIN', '<svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>');
+          const titleEl = el.nxdomainPage.querySelector('.nxdomain-title');
+          const descEl = el.nxdomainPage.querySelector('.nxdomain-desc');
+          const isExternalBlocked = tab.targetUrl === 'torch://blocked';
+
+          if (isExternalBlocked) {
+            titleEl.textContent = 'External Web Restricted';
+            descEl.innerHTML = `<strong>TORCH Browser</strong> is a sovereign network client. External addresses like <span class="nxdomain-domain">${escapeHtml(tab.displayUrl)}</span> are blocked. Only verified <strong>.torch</strong> domains can be accessed here.`;
+            el.btnClaimDomain.style.display = 'none';
+          } else {
+            titleEl.textContent = 'TORCH Site Not Found';
+            descEl.innerHTML = `Unable to connect. The address <span class="nxdomain-domain">${escapeHtml(tab.displayUrl)}</span> is not registered in the TORCH Root DNS.`;
+            el.btnClaimDomain.style.display = 'inline-flex';
+            el.btnClaimDomain.onclick = () => {
+              window.open(`${GITHUB_REPO_URL}/issues/new?title=Claim+Domain:+${encodeURIComponent(tab.displayUrl)}`, '_blank');
+            };
+          }
+          setOmniboxBadge('local', isExternalBlocked ? 'Blocked' : 'Not Found', '<svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>');
         } else {
           // 'torch' or 'web'
           el.startPage.classList.add('hidden');
@@ -1827,7 +1836,10 @@
         el.btnForward.disabled = tab.historyIndex >= tab.history.length - 1;
       };
 
-      /* --- Navigation Router within Active Tab --- */
+
+
+
+      /* --- Navigation Router within Active Tab (Strict Sovereign TORCH Network) --- */
       const navigateActiveTab = (rawInput, addToHistory = true) => {
         const tab = getActiveTab();
         if (!tab) return;
@@ -1840,12 +1852,23 @@
           tab.type = 'start';
           recordHistory('TORCH Start', 'home.torch');
           finalizeTabNav(tab, 'home.torch', addToHistory);
+          renderDirectoryCards();
           return;
         }
 
         const lower = trimmed.toLowerCase();
 
-        // 1. .torch Domain Resolution
+        // 1. Block External Web (http/https or non-.torch TLDs like .com, .in, .org)
+        if (/^https?:\/\//i.test(trimmed) || (lower.includes('.') && !lower.endsWith('.torch'))) {
+          tab.title = 'Blocked External Address';
+          tab.displayUrl = trimmed;
+          tab.targetUrl = 'torch://blocked';
+          tab.type = 'nxdomain';
+          finalizeTabNav(tab, trimmed, addToHistory);
+          return;
+        }
+
+        // 2. Exact .torch Domain Resolution
         if (lower.endsWith('.torch')) {
           const target = state.dnsRecords[lower];
           if (target) {
@@ -1856,7 +1879,7 @@
             recordHistory(lower, lower);
             finalizeTabNav(tab, lower, addToHistory);
           } else {
-            tab.title = `NXDOMAIN: ${lower}`;
+            tab.title = `Not Found: ${lower}`;
             tab.displayUrl = lower;
             tab.targetUrl = `torch://nxdomain?q=${encodeURIComponent(lower)}`;
             tab.type = 'nxdomain';
@@ -1865,40 +1888,44 @@
           return;
         }
 
-        // 2. Direct HTTP / HTTPS URLs
-        if (/^https?:\/\//i.test(trimmed)) {
-          tab.title = trimmed.replace(/^https?:\/\//i, '');
-          tab.displayUrl = trimmed;
-          tab.targetUrl = trimmed;
-          tab.type = 'web';
-          recordHistory(tab.title, trimmed);
-          finalizeTabNav(tab, trimmed, addToHistory);
-          return;
-        }
-
         // 3. Implied .torch shorthand check (e.g. typing "devlab" -> "devlab.torch")
         const shorthand = `${lower}.torch`;
         if (state.dnsRecords[shorthand]) {
-          const target = state.dnsRecords[shorthand];
-          tab.title = shorthand;
-          tab.displayUrl = shorthand;
-          tab.targetUrl = target;
-          tab.type = 'torch';
-          recordHistory(shorthand, shorthand);
-          finalizeTabNav(tab, shorthand, addToHistory);
+          navigateActiveTab(shorthand, addToHistory);
           return;
         }
 
-        // 4. Default Search Query fallback (DuckDuckGo Clean Search)
-        const searchUrl = `https://duckduckgo.com/?q=${encodeURIComponent(trimmed)}`;
-        tab.title = `Search: ${trimmed}`;
-        tab.displayUrl = trimmed;
-        tab.targetUrl = searchUrl;
-        tab.type = 'web';
-        recordHistory(`Search: ${trimmed}`, trimmed);
-        finalizeTabNav(tab, trimmed, addToHistory);
-      };
+        // 4. Built-in Sovereign TORCH Search Engine (Searches ONLY registered .torch records)
+        const matches = Object.entries(state.dnsRecords).filter(([domain, url]) =>
+          domain.includes(lower) || url.toLowerCase().includes(lower)
+        );
 
+        tab.title = `TORCH Search: ${trimmed}`;
+        tab.displayUrl = trimmed;
+        tab.targetUrl = 'torch://search';
+        tab.type = 'start';
+        finalizeTabNav(tab, trimmed, addToHistory);
+
+        el.domainGrid.innerHTML = '';
+        el.directoryCount.textContent = `${matches.length} Search Result(s) for "${trimmed}"`;
+        if (matches.length === 0) {
+          el.domainGrid.innerHTML = `<div class="drawer-empty" style="grid-column: 1/-1;">No registered <strong>.torch</strong> sites matched "<strong>${escapeHtml(trimmed)}</strong>".</div>`;
+        } else {
+          matches.forEach(([domain, target]) => {
+            const card = document.createElement('article');
+            card.className = 'domain-card';
+            card.innerHTML = `
+              <div class="card-top">
+                <div class="card-name">${escapeHtml(domain)}</div>
+                <span class="card-badge">MATCH</span>
+              </div>
+              <div class="card-target">${escapeHtml(target)}</div>
+            `;
+            card.addEventListener('click', () => navigateActiveTab(domain));
+            el.domainGrid.appendChild(card);
+          });
+        }
+      };
       const finalizeTabNav = (tab, displayInput, addToHistory) => {
         if (addToHistory) {
           tab.history = tab.history.slice(0, tab.historyIndex + 1);
@@ -2452,6 +2479,3 @@
   </script>
 </body>
 </html>
-
-
-
