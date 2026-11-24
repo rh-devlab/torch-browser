@@ -43,6 +43,8 @@ jobs:
             cp icon.png assets/icon-foreground.png
             cp icon.png assets/splash.png
             cp icon.png assets/splash-dark.png
+            pip install Pillow
+            python3 -c 'from PIL import Image; Image.new("RGBA", (1024, 1024), (9, 9, 11, 255)).save("assets/icon-background.png")'
             npm install @capacitor/assets --save-dev
             npx capacitor-assets generate --android --iconBackgroundColor '#09090B' --iconBackgroundColorDark '#09090B' --splashBackgroundColor '#09090B' --splashBackgroundColorDark '#09090B'
           fi
