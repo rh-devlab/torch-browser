@@ -141,14 +141,6 @@ Explore the official TORCH source repositories:
 - **TORCH Browser:** https://github.com/rh-devlab/torch-browser
 - **TORCH DNS:** https://github.com/rh-devlab/torch-dns
 
-## ⚠️ Important Information
-
-- `.torch` is a custom domain namespace, not an ICANN-delegated public top-level domain.
-- TORCH Browser is designed to access the TORCH domain environment rather than the conventional public web.
-- TORCH is an independent project and is not affiliated with The Tor Project.
-- TORCH Browser does not claim to provide Tor-network routing or Tor-level anonymity.
-- Availability of TORCH services depends on their underlying hosting, DNS registry, and backend infrastructure.
-
 ## 🤝 Contributing
 
 TORCH is an evolving project.
