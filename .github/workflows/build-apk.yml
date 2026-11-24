@@ -35,7 +35,7 @@ jobs:
           npx cap add android
           npx cap sync android
 
-      - name: Enable Clear-Text Traffic & Status Bar Theme
+      - name: Enable True Edge-to-Edge Notification Bar & Clear-Text Traffic
         run: |
           sed -i 's/<application/<application android:usesCleartextTraffic="true"/g' android/app/src/main/AndroidManifest.xml
           mkdir -p android/app/src/main/res/values
@@ -43,18 +43,42 @@ jobs:
           <?xml version="1.0" encoding="utf-8"?>
           <resources>
               <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
-                  <item name="android:statusBarColor">#09090b</item>
+                  <item name="android:statusBarColor">@android:color/transparent</item>
                   <item name="android:navigationBarColor">#09090b</item>
-                  <item name="android:windowLightStatusBar">false</item>
+                  <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+                  <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
               </style>
               <style name="AppTheme.NoActionBarLaunch" parent="Theme.AppCompat.DayNight.NoActionBar">
                   <item name="android:background">#09090b</item>
-                  <item name="android:statusBarColor">#09090b</item>
+                  <item name="android:statusBarColor">@android:color/transparent</item>
               </style>
           </resources>
           EOF
 
-      - name: Apply Custom Uploaded icon.png to Android App
+          MAIN_ACT=$(find android/app/src/main/java -name "MainActivity.java" | head -n 1)
+          if [ -n "$MAIN_ACT" ]; then
+            cat << 'EOF' > "$MAIN_ACT"
+          package com.rhdevlab.torchbrowser;
+
+          import android.os.Bundle;
+          import android.graphics.Color;
+          import android.view.Window;
+          import androidx.core.view.WindowCompat;
+          import com.getcapacitor.BridgeActivity;
+
+          public class MainActivity extends BridgeActivity {
+              @Override
+              public void onCreate(Bundle savedInstanceState) {
+                  super.onCreate(savedInstanceState);
+                  Window window = getWindow();
+                  WindowCompat.setDecorFitsSystemWindows(window, false);
+                  window.setStatusBarColor(Color.TRANSPARENT);
+              }
+          }
+          EOF
+          fi
+
+      - name: Apply Full-Bleed Adaptive TORCH Icon from icon.png
         run: |
           pip install Pillow
           python3 -c '
@@ -63,6 +87,12 @@ jobs:
 
           if os.path.exists("icon.png"):
               img = Image.open("icon.png").convert("RGBA")
+              r, g, b, _ = img.getpixel((2, 2))
+              bg_hex = f"#{r:02X}{g:02X}{b:02X}"
+
+              os.system("rm -f android/app/src/main/res/drawable/ic_launcher*.xml")
+              os.system("rm -f android/app/src/main/res/drawable-v24/ic_launcher*.xml")
+
               sizes = {
                   "mipmap-mdpi": 48,
                   "mipmap-hdpi": 72,
@@ -70,18 +100,43 @@ jobs:
                   "mipmap-xxhdpi": 144,
                   "mipmap-xxxhdpi": 192
               }
-              # Remove adaptive XMLs so Android uses our exact high-res PNG icons
-              os.system("rm -rf android/app/src/main/res/mipmap-anydpi-v26")
+              fg_sizes = {
+                  "mipmap-mdpi": 108,
+                  "mipmap-hdpi": 162,
+                  "mipmap-xhdpi": 216,
+                  "mipmap-xxhdpi": 324,
+                  "mipmap-xxxhdpi": 432
+              }
+
               for folder, sz in sizes.items():
                   path = f"android/app/src/main/res/{folder}"
                   os.makedirs(path, exist_ok=True)
-                  os.system(f"rm -f {path}/ic_launcher*.webp")
+                  os.system(f"rm -f {path}/ic_launcher*.webp {path}/ic_launcher*.png")
                   resized = img.resize((sz, sz), Image.Resampling.LANCZOS)
-                  for fname in ("ic_launcher.png", "ic_launcher_round.png", "ic_launcher_foreground.png"):
-                      resized.save(f"{path}/{fname}", "PNG")
-              print("Successfully applied custom icon.png!")
-          else:
-              print("icon.png not found, keeping default.")
+                  resized.save(f"{path}/ic_launcher.png", "PNG")
+                  resized.save(f"{path}/ic_launcher_round.png", "PNG")
+
+                  fg_sz = fg_sizes[folder]
+                  canvas = Image.new("RGBA", (fg_sz, fg_sz), (0, 0, 0, 0))
+                  inner_sz = int(fg_sz * 0.72)
+                  flame_resized = img.resize((inner_sz, inner_sz), Image.Resampling.LANCZOS)
+                  offset = (fg_sz - inner_sz) // 2
+                  canvas.paste(flame_resized, (offset, offset))
+                  canvas.save(f"{path}/ic_launcher_foreground.png", "PNG")
+
+              os.makedirs("android/app/src/main/res/values", exist_ok=True)
+              with open("android/app/src/main/res/values/ic_launcher_background.xml", "w") as f:
+                  f.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<resources>\n    <color name=\"ic_launcher_background\">" + bg_hex + "</color>\n</resources>\n")
+
+              os.makedirs("android/app/src/main/res/mipmap-anydpi-v26", exist_ok=True)
+              ns = "http://schemas." + "://android.com"
+              adaptive_xml = f"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<adaptive-icon xmlns:android=\"{ns}\">\n    <background android:drawable=\"@color/ic_launcher_background\"/>\n    <foreground android:drawable=\"@mipmap/ic_launcher_foreground\"/>\n</adaptive-icon>\n"
+              with open("android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml", "w") as f:
+                  f.write(adaptive_xml)
+              with open("android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml", "w") as f:
+                  f.write(adaptive_xml)
+
+              print("Successfully applied full-bleed Adaptive Icon!")
           '
 
       - name: Build Debug APK
@@ -93,5 +148,5 @@ jobs:
       - name: Upload TORCH Browser APK
         uses: actions/upload-artifact@v4
         with:
-          name: TORCH-Browser-Pro-v2.3
+          name: TORCH-Browser-Pro-v2.4
           path: android/app/build/outputs/apk/debug/app-debug.apk
