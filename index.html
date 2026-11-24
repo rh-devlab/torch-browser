@@ -2,8 +2,8 @@
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>TORCH Browser v2.0 Pro | The Open Routing &amp; Community Hub</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>TORCH Browser | Sovereign Web Engine</title>
   <style>
     /* ==========================================================================
        Design System & Tokens (Deep Slate #09090b & Fiery Amber #f97316)
@@ -17,7 +17,7 @@
       --bg-surface: #121217;
       --bg-surface-elevated: #18181f;
       --bg-surface-hover: #22222b;
-      --bg-overlay: rgba(9, 9, 11, 0.85);
+      --bg-overlay: rgba(9, 9, 11, 0.88);
       --border-subtle: #272730;
       --border-strong: #3f3f4e;
       --text-main: #f4f4f6;
@@ -51,7 +51,7 @@
       --bg-surface: #ffffff;
       --bg-surface-elevated: #f1f5f9;
       --bg-surface-hover: #e2e8f0;
-      --bg-overlay: rgba(248, 250, 252, 0.85);
+      --bg-overlay: rgba(248, 250, 252, 0.88);
       --border-subtle: #e2e8f0;
       --border-strong: #cbd5e1;
       --text-main: #09090b;
@@ -75,26 +75,16 @@
       padding: 0;
     }
 
-        html, body {
-      width: 100vw;
-      max-width: 100vw;
-      height: 100vh;
-      overflow: hidden;
-      overscroll-behavior: none;
-      touch-action: pan-y;
-      position: fixed;
-      inset: 0;
-    }
-
     body {
       font-family: var(--font-sans);
       background-color: var(--bg-base);
       color: var(--text-main);
+      height: 100vh;
       display: flex;
       flex-direction: column;
+      overflow: hidden;
       -webkit-font-smoothing: antialiased;
     }
-
 
     button, input {
       font-family: inherit;
@@ -129,7 +119,7 @@
     .icon-lg { width: 24px; height: 24px; }
 
     /* ==========================================================================
-       Browser Chrome Navigation UI (Top Bar)
+       1. True Edge-to-Edge Full-Screen Chrome Header
        ========================================================================== */
     .browser-chrome {
       background: var(--bg-surface);
@@ -138,20 +128,21 @@
       flex-direction: column;
       z-index: 50;
       box-shadow: var(--shadow-sm);
-      padding-top: env(safe-area-inset-top, 24px);
+      padding-top: max(12px, env(safe-area-inset-top));
     }
 
+    /* Top Controls Row: STRICTLY Back, Forward, and Address Bar */
     .nav-bar {
       display: flex;
       align-items: center;
       gap: 8px;
-      padding: 8px 12px;
+      padding: 8px 12px 10px;
     }
 
     .btn-icon {
-      width: 34px;
-      height: 34px;
-      border-radius: 8px;
+      width: 36px;
+      height: 36px;
+      border-radius: 9px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -165,45 +156,14 @@
       color: var(--text-main);
     }
     .btn-icon:active:not(:disabled) {
-      transform: scale(0.94);
+      transform: scale(0.93);
     }
     .btn-icon:disabled {
-      opacity: 0.35;
+      opacity: 0.3;
       cursor: not-allowed;
     }
 
-    /* Flame Burn Button */
-    .btn-burn {
-      color: var(--accent-primary);
-      transition: background-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
-    }
-    .btn-burn:hover {
-      background-color: var(--accent-subtle);
-      box-shadow: 0 0 12px var(--accent-glow);
-    }
-
-    /* Tab Counter Badge */
-    .tab-counter-btn {
-      width: 32px;
-      height: 32px;
-      border: 1.75px solid var(--text-muted);
-      border-radius: 8px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--text-main);
-      cursor: pointer;
-      transition: border-color var(--transition-fast), color var(--transition-fast);
-      user-select: none;
-    }
-    .tab-counter-btn:hover {
-      border-color: var(--accent-primary);
-      color: var(--accent-primary);
-    }
-
-    /* Unified Smart Address Bar */
+    /* Unified Sleek Omnibox */
     .omnibox-wrapper {
       flex: 1;
       display: flex;
@@ -217,9 +177,9 @@
       align-items: center;
       background-color: var(--bg-surface-elevated);
       border: 1px solid var(--border-subtle);
-      border-radius: 10px;
-      padding: 0 8px;
-      height: 38px;
+      border-radius: 12px;
+      padding: 0 10px;
+      height: 40px;
       transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
     }
     .omnibox-form:focus-within {
@@ -265,11 +225,6 @@
       color: var(--accent-primary);
       border: 1px solid rgba(249, 115, 22, 0.25);
     }
-    .omnibox-badge.badge-secure {
-      background-color: var(--emerald-subtle);
-      color: var(--emerald-accent);
-      border: 1px solid rgba(16, 185, 129, 0.25);
-    }
     .omnibox-badge.badge-local {
       background-color: var(--bg-surface-hover);
       color: var(--text-muted);
@@ -286,7 +241,6 @@
       color: var(--text-dim);
     }
 
-    /* Bookmark toggle inside Omnibox */
     .btn-star {
       color: var(--text-dim);
       padding: 4px;
@@ -302,51 +256,33 @@
       fill: var(--accent-primary);
     }
 
-    /* Chrome Action Group */
-    .chrome-actions {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .network-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 10px;
-      font-size: 11.5px;
-      font-weight: 500;
-      background: var(--bg-surface-elevated);
+    /* Shield Settings Popover */
+    .shield-popover {
+      position: absolute;
+      top: 52px;
+      left: 8px;
+      width: 290px;
+      background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
-      border-radius: 20px;
-      color: var(--text-muted);
-      cursor: pointer;
-      user-select: none;
-      transition: border-color var(--transition-fast), color var(--transition-fast);
+      border-radius: 14px;
+      box-shadow: var(--shadow-lg);
+      padding: 16px;
+      z-index: 95;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-6px);
+      transition: opacity var(--transition-fast), transform var(--transition-fast);
     }
-    .network-badge:hover {
-      border-color: var(--border-strong);
-      color: var(--text-main);
-    }
-    .status-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--emerald-accent);
-      box-shadow: 0 0 6px var(--emerald-accent);
-    }
-    .status-dot.syncing {
-      background: var(--accent-primary);
-      box-shadow: 0 0 6px var(--accent-primary);
-      animation: pulse 1s infinite alternate;
+    .shield-popover.open {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
     }
 
-    @keyframes pulse {
-      from { opacity: 0.5; }
-      to { opacity: 1; }
-    }
-
-    /* Bookmark Toolbar */
+    /* Bookmark Bar */
     .bookmark-bar {
       display: flex;
       align-items: center;
@@ -384,7 +320,7 @@
 
     /* ==========================================================================
        Viewport & Main Display Frame
-       ========================================================================== */
+       ========================================================================= */
     .browser-viewport {
       flex: 1;
       position: relative;
@@ -403,33 +339,6 @@
       display: none;
     }
 
-    /* Top Fallback Security Banner */
-        .external-banner {
-      display: none !important;
-    }
-
-    .external-banner.hidden {
-      display: none;
-    }
-    .btn-external {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      background: var(--accent-subtle);
-      color: var(--accent-primary);
-      border: 1px solid rgba(249, 115, 22, 0.3);
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-weight: 500;
-      font-size: 11px;
-      cursor: pointer;
-      transition: background-color var(--transition-fast);
-    }
-    .btn-external:hover {
-      background: var(--accent-primary);
-      color: #ffffff;
-    }
-
     /* ==========================================================================
        Internal View: Built-in Start Page
        ========================================================================== */
@@ -441,7 +350,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 40px 20px 80px;
+      padding: 30px 20px 80px;
       z-index: 10;
     }
     .internal-view.hidden {
@@ -457,34 +366,33 @@
       margin: auto 0;
     }
 
-    /* Flame Torch Logo */
     .torch-brand {
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
       text-align: center;
     }
     .torch-emblem {
-      width: 72px;
-      height: 72px;
-      border-radius: 20px;
+      width: 68px;
+      height: 68px;
+      border-radius: 18px;
       background: linear-gradient(135deg, rgba(249, 115, 22, 0.2), rgba(234, 88, 12, 0.05));
       border: 1px solid rgba(249, 115, 22, 0.3);
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       box-shadow: 0 0 35px -5px var(--accent-glow);
     }
     .torch-emblem svg {
-      width: 40px;
-      height: 40px;
+      width: 38px;
+      height: 38px;
       stroke: var(--accent-primary);
       fill: url(#flameGrad);
     }
     .torch-title {
-      font-size: 32px;
+      font-size: 30px;
       font-weight: 800;
       letter-spacing: -0.03em;
       background: linear-gradient(135deg, #ffffff 40%, var(--accent-primary) 100%);
@@ -497,17 +405,16 @@
       -webkit-text-fill-color: transparent;
     }
     .torch-subtitle {
-      font-size: 13.5px;
+      font-size: 13px;
       color: var(--text-muted);
       margin-top: 4px;
       letter-spacing: 0.01em;
     }
 
-    /* Hero Search Bar */
     .hero-search-box {
       width: 100%;
       max-width: 620px;
-      margin-bottom: 36px;
+      margin-bottom: 32px;
     }
     .hero-search-inner {
       width: 100%;
@@ -536,23 +443,22 @@
       color: var(--text-dim);
     }
 
-    /* Live Registry Directory Section */
     .directory-section {
       width: 100%;
-      margin-bottom: 30px;
+      margin-bottom: 24px;
     }
     .directory-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       padding: 0 4px;
     }
     .directory-title {
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 14px;
+      font-size: 13.5px;
       font-weight: 600;
       color: var(--text-main);
       text-transform: uppercase;
@@ -567,23 +473,22 @@
       border: 1px solid var(--border-subtle);
     }
 
-    /* Cards Grid */
     .domain-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 14px;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 12px;
       width: 100%;
     }
     .domain-card {
       background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
       border-radius: 12px;
-      padding: 16px;
+      padding: 14px;
       cursor: pointer;
       transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
       position: relative;
       overflow: hidden;
     }
@@ -612,7 +517,7 @@
       justify-content: space-between;
     }
     .card-name {
-      font-size: 15px;
+      font-size: 14.5px;
       font-weight: 600;
       color: var(--text-main);
       display: flex;
@@ -620,7 +525,7 @@
       gap: 6px;
     }
     .card-badge {
-      font-size: 10.5px;
+      font-size: 10px;
       font-weight: 600;
       background: var(--accent-subtle);
       color: var(--accent-primary);
@@ -636,9 +541,8 @@
       text-overflow: ellipsis;
     }
 
-    /* Start Page Footer */
     .start-footer {
-      margin-top: 32px;
+      margin-top: 28px;
       font-size: 12px;
       color: var(--text-dim);
       text-align: center;
@@ -666,11 +570,11 @@
       display: none;
     }
     .nxdomain-box {
-      max-width: 500px;
+      max-width: 480px;
       background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
       border-radius: 16px;
-      padding: 36px 30px;
+      padding: 32px 24px;
       box-shadow: var(--shadow-lg);
       display: flex;
       flex-direction: column;
@@ -678,8 +582,8 @@
       gap: 16px;
     }
     .nxdomain-icon {
-      width: 56px;
-      height: 56px;
+      width: 54px;
+      height: 54px;
       border-radius: 14px;
       background: var(--rose-subtle);
       color: var(--rose-accent);
@@ -688,7 +592,7 @@
       justify-content: center;
     }
     .nxdomain-title {
-      font-size: 20px;
+      font-size: 19px;
       font-weight: 700;
       color: var(--text-main);
     }
@@ -718,7 +622,7 @@
       font-size: 13.5px;
       cursor: pointer;
       transition: background-color var(--transition-fast), transform var(--transition-fast);
-      margin-top: 8px;
+      margin-top: 6px;
     }
     .claim-btn:hover {
       background: var(--accent-hover);
@@ -726,15 +630,15 @@
     }
 
     /* ==========================================================================
-       Mobile-First Brave-Style Bottom Navigation Bar
+       2 & 3. Mobile-First Bottom Navigation Bar & 5 Actions
        ========================================================================== */
     .mobile-bottom-nav {
-      display: none;
       background: var(--bg-surface);
       border-top: 1px solid var(--border-subtle);
       position: relative;
       z-index: 60;
-      padding-bottom: max(env(safe-area-inset-bottom, 12px), 8px);
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.25);
+      padding-bottom: max(10px, env(safe-area-inset-bottom));
     }
 
     .bottom-nav-inner {
@@ -742,7 +646,9 @@
       align-items: center;
       justify-content: space-around;
       height: 54px;
-      padding: 0 10px;
+      padding: 0 8px;
+      max-width: 600px;
+      margin: 0 auto;
     }
 
     .bottom-nav-btn {
@@ -752,50 +658,90 @@
       justify-content: center;
       width: 48px;
       height: 48px;
-      border-radius: 10px;
+      border-radius: 12px;
       color: var(--text-muted);
       cursor: pointer;
-      transition: color var(--transition-fast), background-color var(--transition-fast);
+      transition: color var(--transition-fast), background-color var(--transition-fast), transform var(--transition-fast);
       position: relative;
     }
     .bottom-nav-btn:hover, .bottom-nav-btn:active {
       color: var(--accent-primary);
       background-color: var(--bg-surface-hover);
     }
+    .bottom-nav-btn:active {
+      transform: scale(0.92);
+    }
 
     .bottom-tab-badge {
       width: 22px;
       height: 22px;
       border: 1.75px solid currentColor;
-      border-radius: 5px;
+      border-radius: 6px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       font-size: 11px;
       font-weight: 700;
-    }
-    @media (max-width: 768px) {
-      .mobile-bottom-nav {
-        display: block;
-      }
-      .desktop-only {
-        display: none !important;
-      }
-      .nav-bar {
-        flex-wrap: wrap;
-        gap: 6px;
-        padding: 8px 10px;
-      }
-      .omnibox-wrapper {
-        order: 3;
-        flex-basis: 100%;
-        width: 100%;
-      }
-      .chrome-actions {
-        margin-left: auto;
-      }
+      line-height: 1;
     }
 
+    /* ==========================================================================
+       Three-Dot Action Popover Menu (Anchored above bottom bar)
+       ========================================================================== */
+    .menu-popover {
+      position: fixed;
+      bottom: calc(max(10px, env(safe-area-inset-bottom)) + 58px);
+      right: 12px;
+      width: 270px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      box-shadow: var(--shadow-lg);
+      padding: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      z-index: 105;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(8px) scale(0.97);
+      transition: opacity var(--transition-fast), transform var(--transition-fast);
+    }
+    .menu-popover.open {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0) scale(1);
+    }
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: background var(--transition-fast), color var(--transition-fast);
+    }
+    .menu-item:hover {
+      background: var(--bg-surface-hover);
+      color: var(--accent-primary);
+    }
+    .menu-item.highlight-reload {
+      color: var(--accent-primary);
+      font-weight: 600;
+      background: var(--accent-subtle);
+    }
+    .menu-item.highlight-reload:hover {
+      background: var(--accent-primary);
+      color: #ffffff;
+    }
+    .menu-divider {
+      height: 1px;
+      background: var(--border-subtle);
+      margin: 4px 6px;
+    }
 
     /* ==========================================================================
        Full-Screen Multi-Tab Switcher Modal
@@ -804,12 +750,12 @@
       position: fixed;
       inset: 0;
       background: var(--bg-overlay);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      z-index: 100;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      z-index: 120;
       display: flex;
       flex-direction: column;
-      padding: env(safe-area-inset-top, 20px) 16px env(safe-area-inset-bottom, 20px);
+      padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
       opacity: 0;
       pointer-events: none;
       transition: opacity var(--transition-normal);
@@ -823,7 +769,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 12px 6px;
+      padding: 8px 4px 14px;
       border-bottom: 1px solid var(--border-subtle);
       margin-bottom: 16px;
     }
@@ -838,7 +784,7 @@
     .tab-switcher-actions {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
     .btn-switcher-action {
       display: inline-flex;
@@ -871,9 +817,9 @@
       flex: 1;
       overflow-y: auto;
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 16px;
-      padding: 8px 4px;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 14px;
+      padding: 4px;
     }
 
     .tab-card {
@@ -884,7 +830,7 @@
       cursor: pointer;
       display: flex;
       flex-direction: column;
-      height: 180px;
+      height: 175px;
       position: relative;
       transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
     }
@@ -905,7 +851,7 @@
       margin-bottom: 8px;
     }
     .tab-card-title {
-      font-size: 13.5px;
+      font-size: 13px;
       font-weight: 600;
       color: var(--text-main);
       white-space: nowrap;
@@ -940,18 +886,18 @@
       align-items: center;
       justify-content: center;
       color: var(--text-dim);
-      font-size: 12px;
+      font-size: 11.5px;
       padding: 8px;
       text-align: center;
     }
 
     /* ==========================================================================
-       Drawers & Action Overlays (Bookmarks, History, Shield, Menu)
+       Drawers & Backdrops (Bookmarks, History)
        ========================================================================== */
     .drawer-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.6);
+      background: rgba(0, 0, 0, 0.65);
       backdrop-filter: blur(4px);
       -webkit-backdrop-filter: blur(4px);
       z-index: 110;
@@ -974,12 +920,12 @@
       background: var(--bg-surface);
       border-left: 1px solid var(--border-subtle);
       box-shadow: var(--shadow-lg);
-      z-index: 120;
+      z-index: 130;
       display: flex;
       flex-direction: column;
       transform: translateX(100%);
       transition: transform var(--transition-normal);
-      padding: env(safe-area-inset-top, 20px) 16px env(safe-area-inset-bottom, 20px);
+      padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
     }
     .slide-drawer.open {
       transform: translateX(0);
@@ -989,7 +935,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 14px 6px;
+      padding: 12px 4px;
       border-bottom: 1px solid var(--border-subtle);
       margin-bottom: 12px;
     }
@@ -1006,7 +952,7 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
-      padding-right: 4px;
+      padding-right: 2px;
     }
     .drawer-item {
       display: flex;
@@ -1029,7 +975,7 @@
       overflow: hidden;
     }
     .drawer-item-title {
-      font-size: 14px;
+      font-size: 13.5px;
       font-weight: 600;
       color: var(--text-main);
       white-space: nowrap;
@@ -1052,83 +998,10 @@
       font-size: 13.5px;
     }
 
-    /* Three-Dot Popover Menu */
-    .menu-popover {
-      position: absolute;
-      top: 50px;
-      right: 12px;
-      width: 250px;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 14px;
-      box-shadow: var(--shadow-lg);
-      padding: 6px;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      z-index: 90;
-      opacity: 0;
-      pointer-events: none;
-      transform: translateY(-8px) scale(0.97);
-      transition: opacity var(--transition-fast), transform var(--transition-fast);
-    }
-    .menu-popover.open {
-      opacity: 1;
-      pointer-events: auto;
-      transform: translateY(0) scale(1);
-    }
-    .menu-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 12px;
-      border-radius: 8px;
-      font-size: 13.5px;
-      font-weight: 500;
-      color: var(--text-main);
-      cursor: pointer;
-      transition: background var(--transition-fast), color var(--transition-fast);
-    }
-    .menu-item:hover {
-      background: var(--bg-surface-hover);
-      color: var(--accent-primary);
-    }
-    .menu-divider {
-      height: 1px;
-      background: var(--border-subtle);
-      margin: 4px 6px;
-    }
-
-    /* Shield Settings Popover */
-    .shield-popover {
-      position: absolute;
-      top: 52px;
-      left: 140px;
-      width: 290px;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 14px;
-      box-shadow: var(--shadow-lg);
-      padding: 16px;
-      z-index: 95;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      opacity: 0;
-      pointer-events: none;
-      transform: translateY(-6px);
-      transition: opacity var(--transition-fast), transform var(--transition-fast);
-    }
-    .shield-popover.open {
-      opacity: 1;
-      pointer-events: auto;
-      transform: translateY(0);
-    }
-
     /* Toast Notification */
     .torch-toast {
       position: fixed;
-      bottom: 74px;
+      bottom: calc(max(10px, env(safe-area-inset-bottom)) + 64px);
       left: 50%;
       transform: translateX(-50%);
       background: var(--bg-surface-elevated);
@@ -1157,7 +1030,7 @@
 <body>
 
   <!-- ========================================================================
-       Global SVG Definitions
+       Global SVG Definitions & Gradients
        ======================================================================== -->
   <svg style="display: none;">
     <defs>
@@ -1169,34 +1042,24 @@
   </svg>
 
   <!-- ========================================================================
-       Browser Chrome Navigation (Top Bar)
+       Browser Chrome Navigation (Clean Top Bar: ONLY Back, Forward, Omnibox)
        ======================================================================== -->
   <header class="browser-chrome">
     <div class="nav-bar">
-      <!-- Back Button -->
-      <button id="btn-back" class="btn-icon" title="Click to go back" disabled aria-label="Back">
+      <!-- 1. Back Button -->
+      <button id="btn-back" class="btn-icon" title="Go back" disabled aria-label="Back">
         <svg class="icon" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
       </button>
 
-      <!-- Forward Button -->
-      <button id="btn-forward" class="btn-icon" title="Click to go forward" disabled aria-label="Forward">
+      <!-- 2. Forward Button -->
+      <button id="btn-forward" class="btn-icon" title="Go forward" disabled aria-label="Forward">
         <svg class="icon" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
       </button>
 
-      <!-- Reload Button -->
-      <button id="btn-reload" class="btn-icon" title="Reload current tab" aria-label="Reload">
-        <svg id="icon-reload" class="icon" viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 21h5v-5"/></svg>
-      </button>
-
-      <!-- Home Button -->
-      <button id="btn-home" class="btn-icon" title="TORCH Start Page" aria-label="Home">
-        <svg class="icon" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      </button>
-
-      <!-- Unified Smart Address Bar -->
+      <!-- 3. Sleek Omnibox Address/Search Bar -->
       <div class="omnibox-wrapper">
         <form id="omnibox-form" class="omnibox-form">
-          <!-- Security Shield Indicator -->
+          <!-- TORCH Shield Status Indicator inside Omnibox -->
           <button type="button" id="shield-badge-btn" class="shield-badge-btn" title="TORCH Shield Settings">
             <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           </button>
@@ -1207,18 +1070,18 @@
             <span id="badge-text">Start</span>
           </div>
 
-          <!-- Omnibox Text Input -->
+          <!-- Address Input -->
           <input
             type="text"
             id="address-input"
             class="omnibox-input"
-            placeholder="Search or enter .torch address..."
+            placeholder="Enter sovereign .torch address..."
             autocomplete="off"
             spellcheck="false"
           >
 
           <!-- Quick Bookmark Toggle Star -->
-          <button type="button" id="btn-quick-bookmark" class="btn-star" title="Bookmark this page">
+          <button type="button" id="btn-quick-bookmark" class="btn-star" title="Bookmark page">
             <svg class="icon icon-sm" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
           </button>
         </form>
@@ -1233,35 +1096,12 @@
             <span id="shield-mode-label" style="font-size: 11px; font-weight: 700; color: var(--emerald-accent); text-transform: uppercase;">Standard</span>
           </div>
           <p style="font-size: 12px; color: var(--text-muted); line-height: 1.4;">
-            Strict mode restricts iframe sandboxes, blocks popups, and isolates external script execution.
+            Strict mode restricts iframe sandboxes, blocks popups, and isolates sovereign script execution.
           </p>
           <button id="btn-toggle-shield-mode" class="btn-switcher-action primary" style="justify-content: center; width: 100%;">
             Switch to Strict Mode
           </button>
         </div>
-      </div>
-
-      <!-- Actions Group -->
-      <div class="chrome-actions">
-        <!-- Tor-Style Burn / Sweep Button -->
-        <button id="btn-burn-session" class="btn-icon btn-burn" title="Burn Session &amp; New Identity (Sweep Tabs/History)">
-          <svg class="icon" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
-        </button>
-
-        <!-- Live DNS Status Badge -->
-        <div id="btn-refresh-dns" class="network-badge desktop-only" title="Click to refresh DNS registry">
-          <span id="status-dot" class="status-dot"></span>
-          <span id="registry-count-label">Connecting DNS...</span>
-          <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-        </div>
-
-        <!-- Desktop Tab Switcher Badge -->
-        <button id="btn-desktop-tabs" class="tab-counter-btn desktop-only" title="View Open Tabs">1</button>
-
-        <!-- Three-Dot Menu Button -->
-        <button id="btn-menu-toggle" class="btn-icon" title="Browser Menu" aria-label="Menu">
-          <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
-        </button>
       </div>
     </div>
 
@@ -1271,15 +1111,14 @@
         <svg class="icon icon-sm" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
         home.torch
       </button>
-      <button class="bookmark-pill" id="bm-register">
+      <button class="bookmark-pill" id="bm-host">
         <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>
-        Register Domain
+        host.torch
       </button>
-      <button class="bookmark-pill" id="bm-github">
-        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
-        rh-devlab/torch-dns
+      <button class="bookmark-pill" id="bm-torch">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+        torch.torch
       </button>
-      <!-- Dynamic custom bookmarks injected here -->
       <div id="dynamic-bookmarks-container" style="display: contents;"></div>
     </nav>
   </header>
@@ -1288,15 +1127,6 @@
        Main Browser Viewport
        ======================================================================== -->
   <main class="browser-viewport">
-    <!-- Top Fallback Security Banner -->
-    <div id="external-banner" class="external-banner hidden">
-      <span>Site blocking direct embed?</span>
-      <button id="btn-open-external" class="btn-external">
-        Open Externally
-        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-      </button>
-    </div>
-
     <!-- Active Web Viewport (iframe) -->
     <iframe id="web-frame" class="hidden" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"></iframe>
 
@@ -1311,7 +1141,7 @@
             </svg>
           </div>
           <h1 class="torch-title">TORCH Browser</h1>
-          <p class="torch-subtitle">The Open Routing &amp; Community Hub &bull; TORCH DNS v2.0 Pro</p>
+          <p class="torch-subtitle">The Open Routing &amp; Community Hub &bull; Sovereign .torch Walled Garden</p>
         </div>
 
         <!-- Hero Search Box -->
@@ -1322,7 +1152,7 @@
               type="text"
               id="hero-input"
               class="hero-input"
-              placeholder="Explore .torch decentralized ecosystem or browse the web..."
+              placeholder="Navigate to any sovereign .torch domain (e.g. kolkata, host, explorer)..."
               autocomplete="off"
             >
           </form>
@@ -1338,9 +1168,7 @@
             <span id="directory-count" class="directory-counter">0 Active Hubs</span>
           </div>
 
-          <div id="domain-grid" class="domain-grid">
-            <!-- Dynamic .torch cards will be inserted here -->
-          </div>
+          <div id="domain-grid" class="domain-grid"></div>
         </div>
 
         <!-- Start Page Footer -->
@@ -1358,20 +1186,21 @@
         <div class="nxdomain-icon">
           <svg class="icon icon-lg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
         </div>
-        <h2 class="nxdomain-title">NXDOMAIN: Address Not Found</h2>
+        <h2 class="nxdomain-title">NXDOMAIN: Domain Unregistered</h2>
         <p class="nxdomain-desc">
-          The requested routing target <span id="nxdomain-target" class="nxdomain-domain">unknown.torch</span> does not exist in the official TORCH DNS ledger.
+          The sovereign domain <span id="nxdomain-target" class="nxdomain-domain">unknown.torch</span> is not registered on the official TORCH DNS ledger.
         </p>
         <button id="btn-claim-domain" class="claim-btn">
-          <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
-          Claim this Domain on GitHub
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          Claim &amp; Deploy on host.torch
         </button>
       </div>
     </section>
   </main>
 
   <!-- ========================================================================
-       Mobile-First Brave-Style Bottom Navigation Bar
+       Mobile Bottom Navigation Bar (5 Ergonomic Actions)
+       [1: Home, 2: Bookmarks, 3: New Tab (+), 4: Open Tabs Counter, 5: Menu (⋮)]
        ======================================================================== -->
   <nav class="mobile-bottom-nav">
     <div class="bottom-nav-inner">
@@ -1385,17 +1214,17 @@
         <svg class="icon" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
       </button>
 
-      <!-- 3. Focus Search / Omnibox -->
-      <button id="btn-mobile-search" class="bottom-nav-btn" aria-label="Search" title="Search">
-        <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      <!-- 3. New Tab (+) -->
+      <button id="btn-mobile-new-tab" class="bottom-nav-btn" aria-label="New Tab" title="New Tab">
+        <svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       </button>
 
-      <!-- 4. Tab Switcher Square Counter -->
+      <!-- 4. Open Tabs Counter Badge -->
       <button id="btn-mobile-tabs" class="bottom-nav-btn" aria-label="Tabs" title="Tabs">
         <span id="mobile-tab-counter" class="bottom-tab-badge">1</span>
       </button>
 
-      <!-- 5. Three-Dot Action Menu -->
+      <!-- 5. Three-Dot Menu (⋮) -->
       <button id="btn-mobile-menu" class="bottom-nav-btn" aria-label="Menu" title="Menu">
         <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
       </button>
@@ -1403,9 +1232,15 @@
   </nav>
 
   <!-- ========================================================================
-       Three-Dot Action Popover Menu
+       Three-Dot Action Popover Menu (Reload at Top)
        ======================================================================== -->
   <div id="action-menu-popover" class="menu-popover">
+    <!-- Reload / Refresh Page & Root DNS Sync -->
+    <div id="menu-item-reload" class="menu-item highlight-reload">
+      <svg id="icon-menu-reload" class="icon icon-sm" viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 21h5v-5"/></svg>
+      Reload / Refresh Page
+    </div>
+    <div class="menu-divider"></div>
     <div id="menu-item-new-tab" class="menu-item">
       <svg class="icon icon-sm" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       New Tab
@@ -1466,7 +1301,6 @@
         </button>
       </div>
     </div>
-    <!-- Tabs Cards Grid -->
     <div id="tab-grid" class="tab-grid-container"></div>
   </div>
 
@@ -1524,7 +1358,7 @@
   </div>
 
   <!-- ========================================================================
-       TORCH Engine & Application Controller (ES2025+)
+       TORCH Sovereign Engine & Controller (ES2025+)
        ======================================================================== -->
   <script>
     (() => {
@@ -1532,18 +1366,19 @@
 
       /* --- Registry & Constants --- */
       const DNS_REGISTRY_URL = 'https://rh-devlab.github.io/torch-dns/all-domains.json';
-      const GITHUB_REPO_URL = 'https://github.com/rh-devlab/torch-dns';
 
       const DEFAULT_REGISTRY = {
-        "home.torch": "https://rh-devlab.github.io/torch-dns",
-        "devlab.torch": "https://github.com/rh-devlab",
-        "explorer.torch": "https://rh-devlab.github.io/torch-dns/all-domains.json"
+        'home.torch': 'https://rh-devlab.github.io/torch-dns',
+        'host.torch': 'https://rh-devlab.github.io/torch-dns/portal.html',
+        'torch.torch': 'https://rh-devlab.github.io/torch-dns/all-domains.json',
+        'devlab.torch': 'https://github.com/rh-devlab',
+        'explorer.torch': 'https://rh-devlab.github.io/torch-dns/all-domains.json'
       };
 
       const DEFAULT_BOOKMARKS = [
-        { title: "TORCH Start & Hub", url: "home.torch" },
-        { title: "rh-devlab GitHub", url: "devlab.torch" },
-        { title: "DNS Ledger Explorer", url: "explorer.torch" }
+        { title: 'Home Hub', url: 'home.torch' },
+        { title: 'Host Studio', url: 'host.torch' },
+        { title: 'TORCH Core', url: 'torch.torch' }
       ];
 
       /* --- State Management Architecture --- */
@@ -1551,7 +1386,7 @@
         dnsRecords: { ...DEFAULT_REGISTRY },
         tabs: [],
         activeTabId: null,
-        shieldMode: localStorage.getItem('torch-shield-mode') || 'standard', // 'standard' | 'strict'
+        shieldMode: localStorage.getItem('torch-shield-mode') || 'standard',
         bookmarks: JSON.parse(localStorage.getItem('torch-bookmarks-v2') || 'null') || DEFAULT_BOOKMARKS,
         history: JSON.parse(localStorage.getItem('torch-history-v2') || '[]')
       };
@@ -1572,8 +1407,6 @@
 
         btnBack: document.getElementById('btn-back'),
         btnForward: document.getElementById('btn-forward'),
-        btnReload: document.getElementById('btn-reload'),
-        btnHome: document.getElementById('btn-home'),
 
         shieldBadgeBtn: document.getElementById('shield-badge-btn'),
         shieldPopover: document.getElementById('shield-popover'),
@@ -1581,21 +1414,13 @@
         btnToggleShieldMode: document.getElementById('btn-toggle-shield-mode'),
         menuShieldStatus: document.getElementById('menu-shield-status'),
 
-        btnBurnSession: document.getElementById('btn-burn-session'),
-        statusDot: document.getElementById('status-dot'),
-        registryCountLabel: document.getElementById('registry-count-label'),
-        btnRefreshDns: document.getElementById('btn-refresh-dns'),
         directoryCount: document.getElementById('directory-count'),
         domainGrid: document.getElementById('domain-grid'),
 
         heroSearchForm: document.getElementById('hero-search-form'),
         heroInput: document.getElementById('hero-input'),
 
-        externalBanner: document.getElementById('external-banner'),
-        btnOpenExternal: document.getElementById('btn-open-external'),
-
         // Tab Switcher
-        btnDesktopTabs: document.getElementById('btn-desktop-tabs'),
         btnMobileTabs: document.getElementById('btn-mobile-tabs'),
         mobileTabCounter: document.getElementById('mobile-tab-counter'),
         tabSwitcherModal: document.getElementById('tab-switcher-modal'),
@@ -1608,12 +1433,13 @@
         // Mobile Bottom Nav
         btnMobileHome: document.getElementById('btn-mobile-home'),
         btnMobileBookmarks: document.getElementById('btn-mobile-bookmarks'),
-        btnMobileSearch: document.getElementById('btn-mobile-search'),
+        btnMobileNewTab: document.getElementById('btn-mobile-new-tab'),
         btnMobileMenu: document.getElementById('btn-mobile-menu'),
 
         // Popover Menu
-        btnMenuToggle: document.getElementById('btn-menu-toggle'),
         actionMenuPopover: document.getElementById('action-menu-popover'),
+        menuItemReload: document.getElementById('menu-item-reload'),
+        iconMenuReload: document.getElementById('icon-menu-reload'),
         menuItemNewTab: document.getElementById('menu-item-new-tab'),
         menuItemBookmarkPage: document.getElementById('menu-item-bookmark-page'),
         menuItemBookmarks: document.getElementById('menu-item-bookmarks'),
@@ -1638,15 +1464,15 @@
 
         // Bookmarks Bar Defaults
         bmHome: document.getElementById('bm-home'),
-        bmRegister: document.getElementById('bm-register'),
-        bmGithub: document.getElementById('bm-github'),
+        bmHost: document.getElementById('bm-host'),
+        bmTorch: document.getElementById('bm-torch'),
 
         // Toast
         torchToast: document.getElementById('torch-toast'),
         toastMessage: document.getElementById('toast-message')
       };
 
-      /* --- Toast Notification Utility --- */
+      /* --- Toast Utility --- */
       let toastTimer = null;
       const showToast = (msg) => {
         el.toastMessage.textContent = msg;
@@ -1698,10 +1524,9 @@
         localStorage.setItem('torch-shield-mode', state.shieldMode);
         updateShieldUI();
         showToast(`TORCH Shield: ${state.shieldMode.toUpperCase()} mode enabled`);
-
-        // Reload current tab iframe to enforce permissions
+        
         const tab = getActiveTab();
-        if (tab && (tab.type === 'torch' || tab.type === 'web')) {
+        if (tab && tab.type === 'torch') {
           el.webFrame.src = tab.targetUrl;
         }
       };
@@ -1713,7 +1538,7 @@
           title: 'Start Page',
           displayUrl: initialUrl,
           targetUrl: 'torch://home',
-          type: 'start', // 'start' | 'torch' | 'web' | 'nxdomain'
+          type: 'start',
           history: [initialUrl],
           historyIndex: 0
         };
@@ -1725,7 +1550,6 @@
       };
 
       const getActiveTab = () => state.tabs.find(t => t.id === state.activeTabId) || state.tabs[0];
-
 
       const setActiveTab = (tabId) => {
         state.activeTabId = tabId;
@@ -1764,12 +1588,10 @@
 
       const updateTabCounters = () => {
         const count = state.tabs.length;
-        el.btnDesktopTabs.textContent = count;
         el.mobileTabCounter.textContent = count;
         el.tabModalCount.textContent = count;
       };
 
-      /* Render Viewport for active tab */
       const renderTabContent = (tab) => {
         el.addressInput.value = tab.displayUrl;
         updateNavButtons(tab);
@@ -1780,49 +1602,28 @@
           el.webFrame.src = 'about:blank';
           el.nxdomainPage.classList.add('hidden');
           el.startPage.classList.remove('hidden');
-          el.externalBanner.classList.add('hidden');
           setOmniboxBadge('local', 'Start', '<svg class="icon icon-sm" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>');
         } else if (tab.type === 'nxdomain') {
           el.webFrame.classList.add('hidden');
           el.webFrame.src = 'about:blank';
           el.startPage.classList.add('hidden');
-          el.externalBanner.classList.add('hidden');
           el.nxdomainPage.classList.remove('hidden');
           el.nxdomainTarget.textContent = tab.displayUrl;
 
-          const titleEl = el.nxdomainPage.querySelector('.nxdomain-title');
-          const descEl = el.nxdomainPage.querySelector('.nxdomain-desc');
-          const isExternalBlocked = tab.targetUrl === 'torch://blocked';
-
-          if (isExternalBlocked) {
-            titleEl.textContent = 'External Web Restricted';
-            descEl.innerHTML = `<strong>TORCH Browser</strong> is a sovereign network client. External addresses like <span class="nxdomain-domain">${escapeHtml(tab.displayUrl)}</span> are blocked. Only verified <strong>.torch</strong> domains can be accessed here.`;
-            el.btnClaimDomain.style.display = 'none';
-          } else {
-            titleEl.textContent = 'TORCH Site Not Found';
-            descEl.innerHTML = `Unable to connect. The address <span class="nxdomain-domain">${escapeHtml(tab.displayUrl)}</span> is not registered in the TORCH Root DNS.`;
-            el.btnClaimDomain.style.display = 'inline-flex';
-            el.btnClaimDomain.onclick = () => {
-              window.open(`${GITHUB_REPO_URL}/issues/new?title=Claim+Domain:+${encodeURIComponent(tab.displayUrl)}`, '_blank');
-            };
-          }
-          setOmniboxBadge('local', isExternalBlocked ? 'Blocked' : 'Not Found', '<svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>');
+          el.btnClaimDomain.onclick = () => {
+            navigateActiveTab('host.torch');
+          };
+          setOmniboxBadge('local', 'NXDOMAIN', '<svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>');
         } else {
-          // 'torch' or 'web'
           el.startPage.classList.add('hidden');
           el.nxdomainPage.classList.add('hidden');
           el.webFrame.classList.remove('hidden');
-          el.externalBanner.classList.remove('hidden');
 
           if (el.webFrame.src !== tab.targetUrl) {
             el.webFrame.src = tab.targetUrl;
           }
 
-          if (tab.type === 'torch') {
-            setOmniboxBadge('torch', 'Verified .torch', '<svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>');
-          } else {
-            setOmniboxBadge('secure', 'Web', '<svg class="icon icon-sm" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>');
-          }
+          setOmniboxBadge('torch', 'Verified .torch', '<svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>');
         }
       };
 
@@ -1836,10 +1637,18 @@
         el.btnForward.disabled = tab.historyIndex >= tab.history.length - 1;
       };
 
+      /* --- Strict Sovereign .torch Router --- */
+      const normalizeTorchInput = (raw) => {
+        let clean = (raw || '').toLowerCase().trim();
+        clean = clean.replace(/^https?:\/\//i, '').replace(/^torch:\/\//i, '');
+        clean = clean.replace(/\/.*$/, ''); // strip path segments for domain lookup
+        if (!clean) return 'home.torch';
+        if (!clean.endsWith('.torch')) {
+          clean = clean + '.torch';
+        }
+        return clean;
+      };
 
-
-
-      /* --- Navigation Router within Active Tab (Strict Sovereign TORCH Network) --- */
       const navigateActiveTab = (rawInput, addToHistory = true) => {
         const tab = getActiveTab();
         if (!tab) return;
@@ -1852,80 +1661,28 @@
           tab.type = 'start';
           recordHistory('TORCH Start', 'home.torch');
           finalizeTabNav(tab, 'home.torch', addToHistory);
-          renderDirectoryCards();
           return;
         }
 
-        const lower = trimmed.toLowerCase();
+        const domain = normalizeTorchInput(trimmed);
+        const resolvedTarget = state.dnsRecords[domain];
 
-        // 1. Block External Web (http/https or non-.torch TLDs like .com, .in, .org)
-        if (/^https?:\/\//i.test(trimmed) || (lower.includes('.') && !lower.endsWith('.torch'))) {
-          tab.title = 'Blocked External Address';
-          tab.displayUrl = trimmed;
-          tab.targetUrl = 'torch://blocked';
-          tab.type = 'nxdomain';
-          finalizeTabNav(tab, trimmed, addToHistory);
-          return;
-        }
-
-        // 2. Exact .torch Domain Resolution
-        if (lower.endsWith('.torch')) {
-          const target = state.dnsRecords[lower];
-          if (target) {
-            tab.title = lower;
-            tab.displayUrl = lower;
-            tab.targetUrl = target;
-            tab.type = 'torch';
-            recordHistory(lower, lower);
-            finalizeTabNav(tab, lower, addToHistory);
-          } else {
-            tab.title = `Not Found: ${lower}`;
-            tab.displayUrl = lower;
-            tab.targetUrl = `torch://nxdomain?q=${encodeURIComponent(lower)}`;
-            tab.type = 'nxdomain';
-            finalizeTabNav(tab, lower, addToHistory);
-          }
-          return;
-        }
-
-        // 3. Implied .torch shorthand check (e.g. typing "devlab" -> "devlab.torch")
-        const shorthand = `${lower}.torch`;
-        if (state.dnsRecords[shorthand]) {
-          navigateActiveTab(shorthand, addToHistory);
-          return;
-        }
-
-        // 4. Built-in Sovereign TORCH Search Engine (Searches ONLY registered .torch records)
-        const matches = Object.entries(state.dnsRecords).filter(([domain, url]) =>
-          domain.includes(lower) || url.toLowerCase().includes(lower)
-        );
-
-        tab.title = `TORCH Search: ${trimmed}`;
-        tab.displayUrl = trimmed;
-        tab.targetUrl = 'torch://search';
-        tab.type = 'start';
-        finalizeTabNav(tab, trimmed, addToHistory);
-
-        el.domainGrid.innerHTML = '';
-        el.directoryCount.textContent = `${matches.length} Search Result(s) for "${trimmed}"`;
-        if (matches.length === 0) {
-          el.domainGrid.innerHTML = `<div class="drawer-empty" style="grid-column: 1/-1;">No registered <strong>.torch</strong> sites matched "<strong>${escapeHtml(trimmed)}</strong>".</div>`;
+        if (resolvedTarget) {
+          tab.title = domain;
+          tab.displayUrl = domain;
+          tab.targetUrl = resolvedTarget;
+          tab.type = 'torch';
+          recordHistory(domain, domain);
+          finalizeTabNav(tab, domain, addToHistory);
         } else {
-          matches.forEach(([domain, target]) => {
-            const card = document.createElement('article');
-            card.className = 'domain-card';
-            card.innerHTML = `
-              <div class="card-top">
-                <div class="card-name">${escapeHtml(domain)}</div>
-                <span class="card-badge">MATCH</span>
-              </div>
-              <div class="card-target">torch://${escapeHtml(domain)} &bull; Sovereign Hub</div>
-            `;
-            card.addEventListener('click', () => navigateActiveTab(domain));
-            el.domainGrid.appendChild(card);
-          });
+          tab.title = `NXDOMAIN: ${domain}`;
+          tab.displayUrl = domain;
+          tab.targetUrl = `torch://nxdomain?q=${encodeURIComponent(domain)}`;
+          tab.type = 'nxdomain';
+          finalizeTabNav(tab, domain, addToHistory);
         }
       };
+
       const finalizeTabNav = (tab, displayInput, addToHistory) => {
         if (addToHistory) {
           tab.history = tab.history.slice(0, tab.historyIndex + 1);
@@ -1951,11 +1708,10 @@
         state.tabs.forEach(tab => {
           const card = document.createElement('div');
           card.className = `tab-card ${tab.id === state.activeTabId ? 'active' : ''}`;
-
+          
           let previewText = 'TORCH Directory & Search';
           if (tab.type === 'torch') previewText = `Verified Hub: ${tab.targetUrl}`;
-          if (tab.type === 'web') previewText = `External Web: ${tab.targetUrl}`;
-          if (tab.type === 'nxdomain') previewText = 'NXDOMAIN: Address Not Found';
+          if (tab.type === 'nxdomain') previewText = 'NXDOMAIN: Unregistered .torch Domain';
 
           card.innerHTML = `
             <div class="tab-card-header">
@@ -1985,14 +1741,30 @@
         });
       };
 
-      /* --- Tor-Inspired "Burn Session & Sweep" Engine --- */
+      /* --- Reload & DNS Sync Action --- */
+      const reloadActivePage = async () => {
+        el.iconMenuReload.style.transform = 'rotate(180deg)';
+        setTimeout(() => el.iconMenuReload.style.transform = '', 350);
+
+        showToast('Refreshing page & syncing TORCH DNS...');
+        await fetchDnsRegistry();
+
+        const tab = getActiveTab();
+        if (tab) {
+          if (tab.type === 'torch') {
+            el.webFrame.src = tab.targetUrl;
+          } else {
+            navigateActiveTab(tab.displayUrl, false);
+          }
+        }
+      };
+
+      /* --- Tor-Inspired Burn Session --- */
       const burnSession = () => {
-        // Wipe tabs, history, and cache
         state.tabs = [];
         state.history = [];
         localStorage.removeItem('torch-history-v2');
 
-        // Create clean initial start tab
         createTab('home.torch');
         closeAllOverlays();
         renderHistoryList();
@@ -2000,7 +1772,7 @@
         showToast('Identity Cleared: Tabs, history & session cache burned!');
       };
 
-      /* --- Custom Bookmarks Manager --- */
+      /* --- Bookmarks Manager --- */
       const saveBookmarks = () => {
         localStorage.setItem('torch-bookmarks-v2', JSON.stringify(state.bookmarks));
         renderBookmarksDrawer();
@@ -2043,7 +1815,7 @@
       const renderBookmarksDrawer = () => {
         el.bookmarksList.innerHTML = '';
         if (state.bookmarks.length === 0) {
-          el.bookmarksList.innerHTML = '<div class="drawer-empty">No saved bookmarks yet. Star any .torch address or web page!</div>';
+          el.bookmarksList.innerHTML = '<div class="drawer-empty">No saved bookmarks yet. Star any .torch address!</div>';
           return;
         }
 
@@ -2078,7 +1850,12 @@
 
       const renderDynamicBookmarksBar = () => {
         el.dynamicBookmarksContainer.innerHTML = '';
-        state.bookmarks.slice(0, 6).forEach(bm => {
+        // Skip default pills in dynamic render to avoid duplicates
+        const customBookmarks = state.bookmarks.filter(
+          b => !['home.torch', 'host.torch', 'torch.torch'].includes(b.url.toLowerCase())
+        );
+
+        customBookmarks.slice(0, 6).forEach(bm => {
           const pill = document.createElement('button');
           pill.className = 'bookmark-pill';
           pill.innerHTML = `
@@ -2090,12 +1867,11 @@
         });
       };
 
-      /* --- Browsing History Logger --- */
+      /* --- History Logger --- */
       const recordHistory = (title, url) => {
         if (!url || url === 'torch://home') return;
         const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-        // Remove duplicate recent entry if repeated
+        
         state.history = state.history.filter(h => h.url !== url);
         state.history.unshift({ title, url, timestamp });
         if (state.history.length > 80) state.history.pop();
@@ -2140,10 +1916,7 @@
       };
 
       /* --- TORCH DNS Resolution & Start Page Hubs --- */
-      const fetchDnsRegistry = async (manual = false) => {
-        el.statusDot.classList.add('syncing');
-        if (manual) el.registryCountLabel.textContent = 'Syncing...';
-
+      const fetchDnsRegistry = async () => {
         try {
           const res = await fetch(DNS_REGISTRY_URL, { cache: 'no-cache' });
           if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -2151,28 +1924,26 @@
 
           if (data && typeof data === 'object') {
             if (data.records && typeof data.records === 'object') {
-              state.dnsRecords = { ...data.records };
+              state.dnsRecords = { ...DEFAULT_REGISTRY, ...data.records };
             } else if (Array.isArray(data.domains)) {
               const mapped = {};
               data.domains.forEach(d => {
                 if (d.domain && d.target) mapped[d.domain.toLowerCase()] = d.target;
               });
-              state.dnsRecords = mapped;
+              state.dnsRecords = { ...DEFAULT_REGISTRY, ...mapped };
             } else {
-              state.dnsRecords = { ...data };
+              state.dnsRecords = { ...DEFAULT_REGISTRY, ...data };
             }
           }
         } catch (err) {
-          console.warn('TORCH DNS fetch notice: using cached fallback ledger.', err);
+          console.warn('TORCH DNS fetch notice: utilizing fallback ledger.', err);
         } finally {
-          el.statusDot.classList.remove('syncing');
           updateRegistryUI();
         }
       };
 
       const updateRegistryUI = () => {
         const count = Object.keys(state.dnsRecords).length;
-        el.registryCountLabel.textContent = `${count} .torch Online`;
         el.directoryCount.textContent = `${count} Registered Hubs`;
         renderDirectoryCards();
       };
@@ -2196,7 +1967,7 @@
               </div>
               <span class="card-badge">VERIFIED</span>
             </div>
-            <div class="card-target">torch://${escapeHtml(domain)} &bull; Sovereign Hub</div>
+            <div class="card-target">${escapeHtml(target)}</div>
           `;
 
           const triggerNav = () => navigateActiveTab(domain);
@@ -2239,13 +2010,12 @@
       let lastBackPress = 0;
 
       const handleHardwareBack = () => {
-        // Tier 1: Close any open modal or drawer first
         if (el.tabSwitcherModal.classList.contains('open')) {
           closeTabSwitcher();
           return;
         }
-        if (el.bookmarksDrawer.classList.contains('open') ||
-            el.historyDrawer.classList.contains('open') ||
+        if (el.bookmarksDrawer.classList.contains('open') || 
+            el.historyDrawer.classList.contains('open') || 
             el.actionMenuPopover.classList.contains('open') ||
             el.shieldPopover.classList.contains('open')) {
           closeAllOverlays();
@@ -2255,7 +2025,6 @@
         const tab = getActiveTab();
         if (!tab) return;
 
-        // Tier 2: Step back in active tab history
         if (tab.historyIndex > 0) {
           tab.historyIndex--;
           const prev = tab.history[tab.historyIndex];
@@ -2263,13 +2032,11 @@
           return;
         }
 
-        // Tier 3: Return to Start Page if currently viewing a site/NXDOMAIN
         if (tab.type !== 'start') {
           navigateActiveTab('home.torch', true);
           return;
         }
 
-        // Tier 4: On Start Page: require double-tap within 2 seconds to exit app
         const now = Date.now();
         if (now - lastBackPress < 2000) {
           if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
@@ -2300,10 +2067,9 @@
         navigateActiveTab(el.heroInput.value);
       });
 
-      // Quick Bookmark Star
       el.btnQuickBookmark.addEventListener('click', toggleCurrentBookmark);
 
-      // Back & Forward
+      // Top Bar Navigation Controls
       el.btnBack.addEventListener('click', () => {
         const tab = getActiveTab();
         if (tab && tab.historyIndex > 0) {
@@ -2320,48 +2086,26 @@
         }
       });
 
-      // Reload
-      el.btnReload.addEventListener('click', () => {
-        const icon = document.getElementById('icon-reload');
-        icon.style.transform = 'rotate(180deg)';
-        setTimeout(() => icon.style.transform = '', 300);
-
-        const tab = getActiveTab();
-        if (tab) {
-          if (tab.type === 'torch' || tab.type === 'web') {
-            el.webFrame.src = tab.targetUrl;
-          } else {
-            navigateActiveTab(tab.displayUrl, false);
-          }
-        }
-      });
-
-      // Home
-      el.btnHome.addEventListener('click', () => navigateActiveTab('home.torch'));
+      // Bottom Bar 5 Actions
       el.btnMobileHome.addEventListener('click', () => navigateActiveTab('home.torch'));
-
-      // Mobile Bottom Nav Search & Drawer triggers
-      el.btnMobileSearch.addEventListener('click', () => {
-        el.addressInput.focus();
-        el.addressInput.select();
-      });
       el.btnMobileBookmarks.addEventListener('click', openBookmarksDrawer);
-      el.btnMobileMenu.addEventListener('click', () => {
+      el.btnMobileNewTab.addEventListener('click', () => {
+        createTab('home.torch');
+        showToast('Opened new tab');
+      });
+      el.btnMobileTabs.addEventListener('click', openTabSwitcher);
+      el.btnMobileMenu.addEventListener('click', (e) => {
+        e.stopPropagation();
         el.actionMenuPopover.classList.toggle('open');
       });
 
-      // Tab Switcher Openers
-      el.btnDesktopTabs.addEventListener('click', openTabSwitcher);
-      el.btnMobileTabs.addEventListener('click', openTabSwitcher);
+      // Tab Switcher Overlays
       el.btnCloseTabSwitcher.addEventListener('click', closeTabSwitcher);
       el.btnSwitcherNewTab.addEventListener('click', () => {
         createTab('home.torch');
         closeTabSwitcher();
       });
       el.btnCloseAllTabs.addEventListener('click', closeAllTabs);
-
-      // Tor-Style Burn Session
-      el.btnBurnSession.addEventListener('click', burnSession);
 
       // Shield Controls
       el.shieldBadgeBtn.addEventListener('click', (e) => {
@@ -2373,12 +2117,11 @@
         el.shieldPopover.classList.remove('open');
       });
 
-      // Three-Dot Menu
-      el.btnMenuToggle.addEventListener('click', (e) => {
-        e.stopPropagation();
-        el.actionMenuPopover.classList.toggle('open');
+      // Three-Dot Menu Options
+      el.menuItemReload.addEventListener('click', () => {
+        closeAllOverlays();
+        reloadActivePage();
       });
-
       el.menuItemNewTab.addEventListener('click', () => {
         createTab('home.torch');
         closeAllOverlays();
@@ -2426,9 +2169,9 @@
         showToast('Browsing history cleared');
       });
 
-      // Close popovers on click outside
+      // Dismiss popovers on outside click
       document.addEventListener('click', (e) => {
-        if (!el.actionMenuPopover.contains(e.target) && e.target !== el.btnMenuToggle && e.target !== el.btnMobileMenu) {
+        if (!el.actionMenuPopover.contains(e.target) && e.target !== el.btnMobileMenu) {
           el.actionMenuPopover.classList.remove('open');
         }
         if (!el.shieldPopover.contains(e.target) && !el.shieldBadgeBtn.contains(e.target)) {
@@ -2436,7 +2179,6 @@
         }
       });
 
-      // Escape key to close modals
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
           if (el.tabSwitcherModal.classList.contains('open')) closeTabSwitcher();
@@ -2444,21 +2186,10 @@
         }
       });
 
-      // Default Bookmarks
+      // Quick Bookmarks Defaults
       el.bmHome.addEventListener('click', () => navigateActiveTab('home.torch'));
-      el.bmRegister.addEventListener('click', () => window.open(GITHUB_REPO_URL, '_blank'));
-      el.bmGithub.addEventListener('click', () => window.open(GITHUB_REPO_URL, '_blank'));
-
-      // DNS Manual Refresh
-      el.btnRefreshDns.addEventListener('click', () => fetchDnsRegistry(true));
-
-      // External Embed Fallback Button
-      el.btnOpenExternal.addEventListener('click', () => {
-        const tab = getActiveTab();
-        if (tab && tab.targetUrl) {
-          window.open(tab.targetUrl, '_blank', 'noopener,noreferrer');
-        }
-      });
+      el.bmHost.addEventListener('click', () => navigateActiveTab('host.torch'));
+      el.bmTorch.addEventListener('click', () => navigateActiveTab('torch.torch'));
 
       // Capacitor Hardware Back Button Registration
       document.addEventListener('DOMContentLoaded', () => {
