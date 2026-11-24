@@ -35,6 +35,18 @@ jobs:
           npx cap add android
           npx cap sync android
 
+      - name: Generate Official Pro Android Icons via @capacitor/assets
+        run: |
+          mkdir -p assets
+          if [ -f "icon.png" ]; then
+            cp icon.png assets/icon-only.png
+            cp icon.png assets/icon-foreground.png
+            cp icon.png assets/splash.png
+            cp icon.png assets/splash-dark.png
+            npm install @capacitor/assets --save-dev
+            npx capacitor-assets generate --android --iconBackgroundColor '#09090B' --iconBackgroundColorDark '#09090B' --splashBackgroundColor '#09090B' --splashBackgroundColorDark '#09090B'
+          fi
+
       - name: Enable True Edge-to-Edge Notification Bar & Clear-Text Traffic
         run: |
           sed -i 's/<application/<application android:usesCleartextTraffic="true"/g' android/app/src/main/AndroidManifest.xml
@@ -78,67 +90,6 @@ jobs:
           EOF
           fi
 
-      - name: Apply Full-Bleed Adaptive TORCH Icon from icon.png
-        run: |
-          pip install Pillow
-          python3 -c '
-          import os
-          from PIL import Image
-
-          if os.path.exists("icon.png"):
-              img = Image.open("icon.png").convert("RGBA")
-              r, g, b, _ = img.getpixel((2, 2))
-              bg_hex = f"#{r:02X}{g:02X}{b:02X}"
-
-              os.system("rm -f android/app/src/main/res/drawable/ic_launcher*.xml")
-              os.system("rm -f android/app/src/main/res/drawable-v24/ic_launcher*.xml")
-
-              sizes = {
-                  "mipmap-mdpi": 48,
-                  "mipmap-hdpi": 72,
-                  "mipmap-xhdpi": 96,
-                  "mipmap-xxhdpi": 144,
-                  "mipmap-xxxhdpi": 192
-              }
-              fg_sizes = {
-                  "mipmap-mdpi": 108,
-                  "mipmap-hdpi": 162,
-                  "mipmap-xhdpi": 216,
-                  "mipmap-xxhdpi": 324,
-                  "mipmap-xxxhdpi": 432
-              }
-
-              for folder, sz in sizes.items():
-                  path = f"android/app/src/main/res/{folder}"
-                  os.makedirs(path, exist_ok=True)
-                  os.system(f"rm -f {path}/ic_launcher*.webp {path}/ic_launcher*.png")
-                  resized = img.resize((sz, sz), Image.Resampling.LANCZOS)
-                  resized.save(f"{path}/ic_launcher.png", "PNG")
-                  resized.save(f"{path}/ic_launcher_round.png", "PNG")
-
-                  fg_sz = fg_sizes[folder]
-                  canvas = Image.new("RGBA", (fg_sz, fg_sz), (0, 0, 0, 0))
-                  inner_sz = int(fg_sz * 0.72)
-                  flame_resized = img.resize((inner_sz, inner_sz), Image.Resampling.LANCZOS)
-                  offset = (fg_sz - inner_sz) // 2
-                  canvas.paste(flame_resized, (offset, offset))
-                  canvas.save(f"{path}/ic_launcher_foreground.png", "PNG")
-
-              os.makedirs("android/app/src/main/res/values", exist_ok=True)
-              with open("android/app/src/main/res/values/ic_launcher_background.xml", "w") as f:
-                  f.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<resources>\n    <color name=\"ic_launcher_background\">" + bg_hex + "</color>\n</resources>\n")
-
-              os.makedirs("android/app/src/main/res/mipmap-anydpi-v26", exist_ok=True)
-              ns = "http://schemas." + "://android.com"
-              adaptive_xml = f"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<adaptive-icon xmlns:android=\"{ns}\">\n    <background android:drawable=\"@color/ic_launcher_background\"/>\n    <foreground android:drawable=\"@mipmap/ic_launcher_foreground\"/>\n</adaptive-icon>\n"
-              with open("android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml", "w") as f:
-                  f.write(adaptive_xml)
-              with open("android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml", "w") as f:
-                  f.write(adaptive_xml)
-
-              print("Successfully applied full-bleed Adaptive Icon!")
-          '
-
       - name: Build Debug APK
         run: |
           cd android
@@ -148,5 +99,5 @@ jobs:
       - name: Upload TORCH Browser APK
         uses: actions/upload-artifact@v4
         with:
-          name: TORCH-Browser-Pro-v2.4
+          name: TORCH-Browser-Pro-v2.5
           path: android/app/build/outputs/apk/debug/app-debug.apk
